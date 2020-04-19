@@ -1,16 +1,10 @@
 version: '3'
 services:
-  build:
+  ocaml:
     build: .
-    restart: always
     volumes:
     - "$PWD/:/home/opam/project"
-    command: bash -c "cd /home/opam/project && make && exit 0"
-
-  run:
-    build: .
+    stdin_open: true
+    tty: true
     restart: always
-    volumes:
-    - "$PWD/:/home/opam/project"
-    command: bash -c "cd /home/opam/project && ./main.native && exit 0"
-
+    working_dir: /home/opam/project
