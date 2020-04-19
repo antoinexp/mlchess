@@ -127,6 +127,12 @@ let get (chessboard:t) (i,j) =
 		else (case land 0b1111)
 	in figure_of_int figure
 
+let get_and_apply (board:t) p base_element fun_piece  =
+	match get board p with
+		  Empty -> base_element
+		| Figure (color, piece) -> fun_piece color piece
+
+
 let set (chessboard:t) (i,j) figure =
 	let q = (8*i+j) lsr 1 in
 	let case = int_of_char (Bytes.get chessboard q) in
@@ -197,6 +203,7 @@ let init (f:position->figure) =
       	set board (i,j) (f (i,j))
   	  done
 	done;
+	set_last_move board ((7,7),(7,7));
 	board
 
 
@@ -244,10 +251,7 @@ let print (chb:t) =
     	Printf.printf "%c" (char_of_figure piece)
       done;
       print_newline ()
-	done;
-    let a,b = get_last_move chb in
-    Printf.printf "last piece moved: (%d,%d) (%d,%d)\n"
-  		(fst a) (snd a) (fst b) (snd b)
+	done
 
 
 

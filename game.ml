@@ -138,6 +138,20 @@ let print_move =
 	| Promote (m,_) -> f m
 
 
+let get_last_color (board:Board.t) =
+	Board.(
+		let p = snd (get_last_move board) in
+		match get board p with
+			Figure (color, _) -> color
+			| Empty -> failwith "wrong last move"
+	)
+
+let next_color = 
+	function 
+	  Board.Black -> Board.White 
+	| Board.White -> Board.Black 
+
+
 let apply_move (board:Board.t) move =
 	Board.(
 		let board' = copy board in
@@ -149,9 +163,9 @@ let apply_move (board:Board.t) move =
 		in 
 		(match move with
 		  Move m -> f m
-		| Castle (m,_) -> f m
-		| En_passant m -> f m
-		| Promote (m,_) -> f m
+		| Castle (m,_) -> f m (* todo *)
+		| En_passant m -> f m (* todo *)
+		| Promote (m,_) -> f m (* todo *)
 		); board'
 	)
 

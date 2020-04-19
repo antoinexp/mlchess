@@ -1,0 +1,16 @@
+version: '3'
+services:
+  build:
+    build: .
+    restart: always
+    volumes:
+    - "$PWD/:/home/opam/project"
+    command: bash -c "cd /home/opam/project && make && exit 0"
+
+  run:
+    build: .
+    restart: always
+    volumes:
+    - "$PWD/:/home/opam/project"
+    command: bash -c "cd /home/opam/project && ./main.native && exit 0"
+

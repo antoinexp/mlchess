@@ -23,6 +23,34 @@ let get_random_move board color =
 	let l = Game.list_move board color in
     List.nth l (Random.int (List.length l))
 
+
+let select_best_move board color =
+	let l = Game.list_move board color in
+	let map move = 
+		let new_board = Game.apply_move board move in
+		let score = Eval.score_board new_board in
+		if color = Board.White then score else -. score
+	in 
+	let best_move = List.fold_left (
+		fun (best_score, best_move) move ->
+			let new_score = map move in
+			if new_score > best_score then (new_score, Some move)
+			else (best_score, best_move)
+	) (-.10000000., None) l in
+	match best_move with
+		  (_,None) -> failwith "no moves"
+		| (score,Some move) -> Printf.printf "\nscore=%f\n" score; move
+
+
+let show_move_score board =
+	let l = Game.list_move board Game.(next_color (get_last_color board)) in
+	List.iter (fun move ->
+		Game.print_move move;
+		let new_board = Game.apply_move board move in
+		Printf.printf "score = %f\n" (Eval.score_board new_board)
+	) l
+
+
 let next_color = 
 	function 
 	  Board.Black -> Board.White 
@@ -31,15 +59,22 @@ let next_color =
 let _ =
 	let board = Board.initialBoard () in
 	Board.print board; 
-	(*let l = Game.list_move board Board.White in
-	List.iter Game.print_move l;*)
+
 	let rec f board color =
 		function
-		  0 -> ()
+		  0 -> board
 		| n -> (
-			let move = get_random_move board color in
+			let move = select_best_move board color in
 			let board_new = Game.apply_move board move in
 			Board.print board_new;
 			f board_new (next_color color) (n-1)
 		  )
-	in f board Board.Black 150
+	in 
+	let new_board = f board Board.White 10 in
+	show_move_score new_board
+
+
+
+
+
+
