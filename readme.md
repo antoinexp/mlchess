@@ -1,8 +1,8 @@
 build:
 
-docker-compose up build
+`docker-compose up build`
 
 
 run:
 
-docker-compose up run
+`docker-compose up run`
